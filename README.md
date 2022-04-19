@@ -36,7 +36,7 @@ pip install -r requirements.txt
 ```
 python avitoparser.py
 ```
-
+---
 При возникновении ошибок от модуля **"Pytesseract"** установить дополнительно: 
 ```
 sudo apt-get install python3-pil tesseract-ocr libtesseract-dev tesseract-ocr-eng tesseract-ocr-script-latn
