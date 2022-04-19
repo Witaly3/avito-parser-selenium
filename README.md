@@ -44,3 +44,7 @@ sudo apt-get install python3-pil tesseract-ocr libtesseract-dev tesseract-ocr-en
 либо следовать другим советам из stackoverflow:
 
 ```https://stackoverflow.com/questions/50951955/pytesseract-tesseractnotfound-error-tesseract-is-not-installed-or-its-not-i```
+
+---
+
+<h1 align="center"><img src="https://github.com/Witaly3/avito-parser-selenium/blob/main/gif.gif" height="500"/></h1>
