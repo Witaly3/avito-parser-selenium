@@ -30,8 +30,9 @@ source\venv\bin\activate
 ```
 pip install -r requirements.txt
 ```
+7. Установить необходимые драйвера для браузеров: ``` https://losst.ru/ustanovka-selenium-v-linux ```
 
-7. Запустить парсер
+8. Запустить парсер
 ```
 python avitoparser.py
 ```
