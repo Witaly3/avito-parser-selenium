@@ -46,8 +46,8 @@ def avito_parser():
     driver.implicitly_wait(15)
     driver.get(URL_AVITO)
 
-    count = int(driver.find_element(by=By.CSS_SELECTOR,
-                                    value='span[data-marker="page-title/count"]').text)
+    count = int((driver.find_element(by=By.CSS_SELECTOR,
+                                     value='span[data-marker="page-title/count"]').text).replace(' ', ''))
 
     for i in range(ceil(count / 50)):
         offer = []
