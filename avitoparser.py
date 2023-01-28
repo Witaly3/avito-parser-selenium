@@ -29,8 +29,11 @@ def cb_rf():
     response = requests.get(url=url)
     soup = BeautifulSoup(response.text, "lxml")
     global EUR
-    EUR = float(soup.findAll("div",
-                             class_="col-md-2 col-xs-9 _right mono-num")[2].text[:-10].replace(",", "."))
+    EUR = float(
+        soup.findAll("div", class_="col-md-2 col-xs-9 _right mono-num")[2]
+        .text[:-10]
+        .replace(",", ".")
+    )
 
 
 def avito_parser():
@@ -46,58 +49,82 @@ def avito_parser():
     driver.implicitly_wait(15)
     driver.get(URL_AVITO)
 
-    count = int((driver.find_element(by=By.CSS_SELECTOR,
-                                     value='span[data-marker="page-title/count"]').text).replace(' ', ''))
+    count = int(
+        (
+            driver.find_element(
+                by=By.CSS_SELECTOR, value='span[data-marker="page-title/count"]'
+            ).text
+        ).replace(" ", "")
+    )
 
-    for i in range(ceil(count / 50)):
+    for _ in range(ceil(count / 50)):
         offer = []
-        elems = driver.find_elements(by=By.CSS_SELECTOR,
-                                     value='div[data-marker="item"]')
+        elems = driver.find_elements(
+            by=By.CSS_SELECTOR, value='div[data-marker="item"]'
+        )
         for elem in elems:
             try:
                 avito_id = int(elem.get_attribute("id")[1:])
-                url = elem.find_element(by=By.CSS_SELECTOR,
-                                        value='a[itemprop="url"]').get_attribute("href")
-                item_address = elem.find_element(by=By.CSS_SELECTOR,
-                                                 value='div[data-marker="item-address"]').text.split('\n')
+                url = elem.find_element(
+                    by=By.CSS_SELECTOR, value='a[itemprop="url"]'
+                ).get_attribute("href")
+                item_address = elem.find_element(
+                    by=By.CSS_SELECTOR, value='div[data-marker="item-address"]'
+                ).text.split("\n")
                 address = item_address[0]
                 district = item_address[1] if len(item_address) > 1 else "Рязанский р-н"
-                advert = elem.text.split('\n')
+                advert = elem.text.split("\n")
                 price = round(int(advert[1][:-10].replace(" ", "")) / EUR, 2)
                 rooms = advert[0].split(", ")[0].split()[0].replace("-к.", "")
                 area = float(advert[0].split(", ")[1][:-3].replace(",", "."))
-                floor = int(advert[0].split(", ")[2].split('/')[0])
-                total_floor = int(advert[0].split(", ")[2].split('/')[1][:-4])
-                text = elem.find_element(by=By.CSS_SELECTOR,
-                                         value='meta[itemprop="description"]').get_attribute("content")
+                floor = int(advert[0].split(", ")[2].split("/")[0])
+                total_floor = int(advert[0].split(", ")[2].split("/")[1][:-4])
+                text = elem.find_element(
+                    by=By.CSS_SELECTOR, value='meta[itemprop="description"]'
+                ).get_attribute("content")
                 online_display = "Да" if "Онлайн-показ" in advert else "Нет"
 
                 hover = ActionChains(driver).move_to_element(elem)
                 hover.perform()
 
-                button = elem.find_element(by=By.CSS_SELECTOR,
-                                           value='button[type="button"]')
+                button = elem.find_element(
+                    by=By.CSS_SELECTOR, value='button[type="button"]'
+                )
                 button.click()
 
                 rand_sleep = randint(25, 49)
                 sleep(rand_sleep / 10)
 
-                phone_pict = elem.find_element(by=By.CSS_SELECTOR,
-                                               value="img[data-marker='phone-image']").get_attribute("src")
-                data = b64decode(phone_pict.split('base64,')[-1].strip())
+                phone_pict = elem.find_element(
+                    by=By.CSS_SELECTOR, value="img[data-marker='phone-image']"
+                ).get_attribute("src")
+                data = b64decode(phone_pict.split("base64,")[-1].strip())
                 image = Image.open(BytesIO(data))
-                phone_number = pytesseract.image_to_string(image).split('\n')[0]
+                phone_number = pytesseract.image_to_string(image).split("\n")[0]
 
-                result = (avito_id, rooms, area, price, address, district, floor,
-                          total_floor, phone_number, text, online_display, url)
+                result = (
+                    avito_id,
+                    rooms,
+                    area,
+                    price,
+                    address,
+                    district,
+                    floor,
+                    total_floor,
+                    phone_number,
+                    text,
+                    online_display,
+                    url,
+                )
                 offer.append(result)
 
             except Exception as ex:
                 print(ex)
 
         check_database(offer)
-        driver.find_element(by=By.CSS_SELECTOR,
-                            value='span[data-marker="pagination-button/next"]').click()
+        driver.find_element(
+            by=By.CSS_SELECTOR, value='span[data-marker="pagination-button/next"]'
+        ).click()
 
     driver.quit()
 

@@ -21,7 +21,7 @@ python -m venv venv
 4. Активировать окружение: 
 
 ````
-source\venv\bin\activate
+source venv/bin/activate
 ````
 5. В файле config.py изменить город или регион поиска (по умолчанию "Рязань")
  

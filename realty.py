@@ -2,29 +2,36 @@ import sqlite3
 
 
 def check_database(offer):
-    with sqlite3.connect('realty.db') as connection:
+    with sqlite3.connect("realty.db") as connection:
         cursor = connection.cursor()
         for data in offer:
             avito_id = data[0]
-            cursor.execute("""
+            cursor.execute(
+                """
                 SELECT avito_id FROM offers WHERE avito_id = (?)
-            """, (avito_id,))
+            """,
+                (avito_id,),
+            )
             result = cursor.fetchone()
             if result is None:
-                cursor.execute("""
+                cursor.execute(
+                    """
                     INSERT INTO offers
                     VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime())
-                """, data)
+                """,
+                    data,
+                )
                 connection.commit()
-                print(f'Объявление {avito_id} добавлено в базу данных')
+                print(f"Объявление {avito_id} добавлено в базу данных")
             else:
-                print(f'Объявление {avito_id} не добавлено в базу данных')
+                print(f"Объявление {avito_id} не добавлено в базу данных")
 
 
 def create_table():
-    connection = sqlite3.connect('realty.db')
+    connection = sqlite3.connect("realty.db")
     cursor = connection.cursor()
-    cursor.execute(""" CREATE TABLE IF NOT EXISTS offers (
+    cursor.execute(
+        """ CREATE TABLE IF NOT EXISTS offers (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     avito_id INTEGER UNIQUE NOT NULL,
                     rooms TEXT NOT NULL,
@@ -40,7 +47,8 @@ def create_table():
                     url TEXT NOT NULL,
                     Timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
                     );
-    """)
+    """
+    )
     connection.close()
 
 
